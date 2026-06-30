@@ -39,7 +39,7 @@ public class SecurityConfig {
                 // All requests are allowed (authorization is done in API Gateway)
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
-                                "/api/v1/auth/**",
+                                "/api/v1/**",
                                 "/instances",
                                 "/actuator/**",
                                 "/swagger-ui.html",

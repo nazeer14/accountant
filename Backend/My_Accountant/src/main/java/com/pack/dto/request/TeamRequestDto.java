@@ -7,8 +7,9 @@ import jakarta.validation.constraints.Size;
 
 import java.util.UUID;
 
-@Schema(description = "Request payload for creating or updating a team")
+@Schema(description = "Request payload for creating or updating a team. iconUrl is intentionally excluded — set it via the Image upload API.")
 public record TeamRequestDto(
+
 
         @Schema(description = "UUID of the team owner", example = "123e4567-e89b-12d3-a456-426614174000")
         @NotNull(message = "Owner ID is required")

@@ -6,14 +6,21 @@ import jakarta.validation.constraints.NotNull;
 
 import java.util.UUID;
 
-@Schema(description = "Request payload for adding or updating a team member")
+@Schema(description = "Request payload for adding a member to a team")
 public record TeamMemberRequestDto(
 
-        @Schema(description = "UUID of the user to add to the team", example = "123e4567-e89b-12d3-a456-426614174002")
+        @Schema(description = "Team UUID the member is being added to")
+        @NotNull(message = "Team ID is required")
+        UUID teamId,
+
+        @Schema(description = "UUID of the user being added")
         @NotNull(message = "User ID is required")
         UUID userId,
 
-        @Schema(description = "Role assigned to the team member", example = "MEMBER")
+        @Schema(description = "Role to assign", example = "MEMBER")
         @NotNull(message = "Role is required")
-        TeamRole role
+        TeamRole role,
+
+        @Schema(description = "UUID of the user performing the invite/add action (for audit trail)")
+        UUID invitedByUserId
 ) {}

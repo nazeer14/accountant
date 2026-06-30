@@ -93,6 +93,18 @@ public interface ExpenseRepository extends JpaRepository<Expense, UUID>, JpaSpec
 
     Page<Expense> findByUserIdAndIsApproved(UUID userId, Boolean isApproved, Pageable pageable);
 
+    @Query("SELECT COALESCE(SUM(e.amount), 0) FROM Expense e " +
+            "WHERE e.user.id = :userId " +
+            "AND e.category = :category " +
+            "AND e.isApproved = true " +
+            "AND FUNCTION('MONTH', e.expenseDate) = :month " +
+            "AND FUNCTION('YEAR', e.expenseDate) = :year")
+    BigDecimal sumApprovedAmountByUserCategoryAndMonth(
+            @Param("userId") UUID userId,
+            @Param("category") Category category,
+            @Param("month") Integer month,
+            @Param("year") Integer year);
+
     // ─── Bulk Operations ──────────────────────────────────────────────────────
 
     @Modifying

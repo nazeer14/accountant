@@ -1,32 +1,33 @@
 package com.pack.dto.response;
 
+import com.pack.enums.MembershipStatus;
 import com.pack.enums.TeamRole;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.time.OffsetDateTime;
 import java.util.UUID;
 
-@Schema(description = "Team member response payload")
+@Schema(description = "Team membership response payload")
 public record TeamMemberResponseDto(
 
-        @Schema(description = "Membership record ID")
         UUID id,
-
-        @Schema(description = "Team ID")
         UUID teamId,
-
-        @Schema(description = "Team name")
         String teamName,
-
-        @Schema(description = "User ID of the member")
         UUID userId,
 
-        @Schema(description = "Display name / full name")
-        String fullName,
+        @Schema(description = "Full name of the member")
+        String userFullName,
 
-        @Schema(description = "Role of the member in the team")
         TeamRole role,
+        MembershipStatus status,
+        UUID invitedByUserId,
 
-        @Schema(description = "When this member joined the team")
-        OffsetDateTime joinedAt
+        @Schema(description = "Full name of the user who invited/added this member")
+        String invitedByFullName,
+
+        OffsetDateTime joinedAt,
+        OffsetDateTime leftAt,
+        String statusReason,
+        OffsetDateTime createdAt,
+        OffsetDateTime updatedAt
 ) {}

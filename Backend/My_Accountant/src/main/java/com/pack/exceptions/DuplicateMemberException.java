@@ -1,6 +1,5 @@
 package com.pack.exceptions;
 
-import com.pack.exceptions.TeamException;
 
 import java.util.UUID;
 

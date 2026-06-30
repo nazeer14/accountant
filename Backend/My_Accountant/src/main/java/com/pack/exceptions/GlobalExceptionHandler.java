@@ -7,6 +7,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.validation.BindException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
@@ -197,6 +198,39 @@ public class GlobalExceptionHandler {
                 "Missing Parameter",
                 message,
                 request);
+    }
+
+    // ─── Domain: 422 ──────────────────────────────────────────────────────────
+
+    @ExceptionHandler(LastOwnerException.class)
+    public ResponseEntity<ErrorResponse> handleLastOwner(
+            LastOwnerException ex, HttpServletRequest req) {
+        log.warn("Last-owner guard triggered: {}", ex.getMessage());
+        return status(HttpStatus.UNPROCESSABLE_ENTITY, "Last Owner Protection", ex.getMessage(), req);
+    }
+
+    @ExceptionHandler(InvalidMembershipStateException.class)
+    public ResponseEntity<ErrorResponse> handleInvalidState(
+            InvalidMembershipStateException ex, HttpServletRequest req) {
+        log.warn("Invalid membership state transition: {}", ex.getMessage());
+        return status(HttpStatus.UNPROCESSABLE_ENTITY, "Invalid State Transition", ex.getMessage(), req);
+    }
+
+    // ─── Domain: 409 ──────────────────────────────────────────────────────────
+
+    @ExceptionHandler(DuplicateBudgetException.class)
+    public ResponseEntity<ErrorResponse> handleDuplicate(
+            DuplicateBudgetException ex, HttpServletRequest req) {
+        log.warn("Duplicate budget: {}", ex.getMessage());
+        return status(HttpStatus.CONFLICT, "Conflict", ex.getMessage(), req);
+    }
+
+    @ExceptionHandler({ConcurrentModificationException.class, ObjectOptimisticLockingFailureException.class})
+    public ResponseEntity<ErrorResponse> handleOptimisticLock(
+            Exception ex, HttpServletRequest req) {
+        log.warn("Optimistic locking conflict on {}: {}", req.getRequestURI(), ex.getMessage());
+        return status(HttpStatus.CONFLICT, "Concurrent Modification",
+                "This budget was modified by another request. Please refresh and try again.", req);
     }
 
     @ExceptionHandler(HttpMessageNotReadableException.class)
